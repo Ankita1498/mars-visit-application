@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -38,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+=======
+# generated files
+target/
+generated/
+
+# dependencies
+Dependencies.toml
+
+# config files
+Config.toml
+# the config files used for testing, Uncomment the following line if you want to commit the test config files
+#!**/tests/Config.toml
+>>>>>>> 919f4625dc5fea6f6e71b95b5e2eba6e08f4cdeb
