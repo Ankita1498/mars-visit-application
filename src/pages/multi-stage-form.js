@@ -17,11 +17,48 @@ const MultiStageForm = () => {
     medicalConditions: "",
   });
 
-  const handleNext = () => setCurrentStage((prev) => prev + 1);
+  const handleNext = () => {
+    if (validateCurrentStage()) {
+      // Validate that the return date is later than the departure date
+      if (currentStage === 2 && new Date(formData.returnDate) <= new Date(formData.departureDate)) {
+        alert("Return date must be later than the departure date.");
+        return;
+      }
+
+      // Validate that the birth date is less than today
+      if (currentStage === 1 && new Date(formData.dateOfBirth) >= new Date()) {
+        alert("Birth date must be earlier than today.");
+        return;
+      }
+
+     // Validate phone number format
+    if (formData.phone && !validatePhone(formData.phone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    setCurrentStage((prev) => prev + 1);
+  } else {
+    alert("Please fill out all required fields.");
+  }
+
+  // Validate email
+  if (!validateEmail(formData.contactInfo)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+
+  // Validate emergency contact
+  if (formData.emergencyContact && !validateEmergencyContact(formData.emergencyContact)) {
+    alert("Please enter a valid emergency contact number.");
+    return;
+  }
+};
+
   const handleBack = () => setCurrentStage((prev) => prev - 1);
 
   const validateEmail = (email) => {
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zAZ0-9.-]+\.[a-zA-Z]{2,6}$/;
     return emailPattern.test(email);
   };
 
@@ -92,6 +129,19 @@ const MultiStageForm = () => {
     });
   };
 
+  const validateCurrentStage = () => {
+    if (currentStage === 1) {
+      return formData.fullName && formData.dateOfBirth && formData.nationality && formData.contactInfo;
+    }
+    if (currentStage === 2) {
+      return formData.departureDate && formData.returnDate && formData.accommodation;
+    }
+    if (currentStage === 3) {
+      return formData.healthDeclaration && formData.emergencyContact;
+    }
+    return true;
+  };
+
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit}>
@@ -152,6 +202,7 @@ const MultiStageForm = () => {
                 setFormData({ ...formData, phone: e.target.value })
               }
               placeholder="Enter 10-digit phone number"
+              required
             />
           </div>
         )}
